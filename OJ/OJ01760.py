@@ -1,25 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jan 28 18:46:13 2024
+Created on Tue Apr  9 14:39:09 2024
 
 @author: Lenovo
 """
 
-def Print(s,cnt,path):
-    ls=sorted(s)
-    for items in ls:
-        print(" "*cnt+items)
-        if dic[path+items]:
-            Print(dic[path+items],cnt+1,path+items)
+class Node:
+    def __init__(self):
+        self.childs={}
 
-from collections import defaultdict
+class Tree:
+    def __init__(self):
+        self.root=Node()
+    
+    def insert(self,l):
+        node=self.root
+        for direct in l:
+            if direct not in node.childs:
+                node.childs[direct]=Node()
+            node=node.childs[direct]
+            
+def Print(node,level):
+    if not node.childs:
+        return
+    for direct in sorted(node.childs.keys()):
+        print(" "*level+direct)
+        Print(node.childs[direct],level+1)
+        
 n=int(input())
-s=set()
-dic=defaultdict(set)
-for _ in range(n):
+tree=Tree()
+for i in range(n):
     l=list(input().split("\\"))
-    if l[0] not in s:
-        s.add(l[0])
-    for i in range(1,len(l)):
-        dic["".join(l[:i])].add(l[i])
-Print(s,0,"")
+    tree.insert(l)
+Print(tree.root,0)

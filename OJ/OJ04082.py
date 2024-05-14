@@ -1,59 +1,49 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 25 12:40:32 2024
+Created on Mon Apr  8 13:56:05 2024
 
 @author: Lenovo
 """
 
 from collections import deque
-i=index=0
 class Node:
-    def __init__(self,No):
-        self.No=No
-        self.left=None
-        self.right=None
+    def __init__(self,value):
+        self.value=value
+        self.lchild=None
+        self.rchild=None
 
-def node():
-    global i
-    tree[i].left=None
-    tree[i].right=None
-    i+=1
-    return tree[i-1]
+def build(l):
+    no=l.pop(0)
+    node=Node(no[0])
+    if no[1]=="0":
+        node.lchild=build(l)
+        node.rchild=build(l)
+    return node
 
-def trees():
-    global index
-    nodes=node()
-    p=l[index]
-    index+=1
-    nodes.No=p[0]
-    if p[1]=="0" and p[0]!="$":
-        nodes.left=trees()
-        nodes.right=trees()
-    return nodes
-
-def decode(nodes):
-    s,q=deque(),deque()
-    while nodes is not None:
-        if nodes.No!="$":
-            s.append(nodes)
-        nodes=nodes.right
-    while s:
-        q.append(s.pop())
-    while q:
-        nodes=q.popleft()
-        print(nodes.No,end=" ")
-        if nodes.left is not None:
-            nodes=nodes.left
-            while nodes is not None:
-                if nodes.No!="$":
-                    s.append(nodes)
-                nodes=nodes.right
-            while s:
-                q.append(s.pop())
-                
+def Print(tree):
+    q1,q2=deque(),deque()
+    ans=[]
+    node=tree 
+    while node is not None:
+        if node.value!="$":
+            q2.append(node)
+        node=node.rchild
+    while q2:
+        q1.append(q2.pop())
+    while q1:
+        node=q1.popleft()
+        ans.append(node.value)
+        if node.lchild is not None:
+            node=node.lchild
+            while node is not None:
+                if node.value!="$":
+                    q2.append(node)
+                node=node.rchild
+            while q2:
+                q1.append(q2.pop())
+    return ans
+        
 n=int(input())
 l=list(input().split())
-tree=[Node("")for i in range(n)]
-i=index=0
-Tree=trees()
-decode(Tree)
+tree=build(l)
+print(*Print(tree))
